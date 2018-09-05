@@ -1,0 +1,53 @@
+#simonsays-game {
+    height: 40vw;
+    width: 40vw;
+    background-color: white;
+}
+
+.simonsays-button {
+    width:49%;
+    height: 49%;
+    display: inline-block;
+    border-radius: 6px;
+    margin: 0 0 0 0;
+}
+
+.simonsays-button#blue {
+    background: lightblue;
+    border: 2px solid blue;
+}
+
+.simonsays-button#blue.active,
+.simonsays-button#blue:active {
+    background: blue;
+}
+
+.simonsays-button#red {
+    background: lightcoral;
+    border: 2px solid red;
+}
+
+.simonsays-button#red.active,
+.simonsays-button#red:active {
+    background: red;
+}
+
+.simonsays-button#green {
+    background: lightgreen;
+    border: 2px solid green;
+}
+
+.simonsays-button#green.active,
+.simonsays-button#green:active {
+    background: green;
+}
+
+.simonsays-button#yellow {
+    background: rgb(252, 252, 132);
+    border: 2px solid yellow;
+}
+
+.simonsays-button#yellow.active,
+.simonsays-button#yellow:active {
+    background: yellow;
+}
