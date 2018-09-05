@@ -12,6 +12,61 @@
 
 <body>
     <div id="simonsays-container">
+        <style>
+            #simonsays-game {
+                background-color: white;
+                height: 40vw;
+                width: 40vw;
+            }
+
+            .simonsays-button {
+                width: 49%;
+                height: 49%;
+                display: inline-block;
+                border-radius: 6px;
+                margin: 0 0 0 0;
+            }
+
+            .simonsays-button#blue {
+                background: lightblue;
+                border: 2px solid blue;
+            }
+
+            .simonsays-button#blue.active,
+            .simonsays-button#blue:active {
+                background: blue;
+            }
+
+            .simonsays-button#red {
+                background: lightcoral;
+                border: 2px solid red;
+            }
+
+            .simonsays-button#red.active,
+            .simonsays-button#red:active {
+                background: red;
+            }
+
+            .simonsays-button#green {
+                background: lightgreen;
+                border: 2px solid green;
+            }
+
+            .simonsays-button#green.active,
+            .simonsays-button#green:active {
+                background: green;
+            }
+
+            .simonsays-button#yellow {
+                background: rgb(252, 252, 132);
+                border: 2px solid yellow;
+            }
+
+            .simonsays-button#yellow.active,
+            .simonsays-button#yellow:active {
+                background: yellow;
+            }
+        </style>
         <div id="simonsays-game">
             <button id="red" class="simonsays-button"></button>
             <button id="green" class="simonsays-button"></button>
@@ -19,9 +74,120 @@
             <button id="blue" class="simonsays-button"></button>
         </div>
         <button id="start-game">Start Game</button>
-        <div id="current-score">Current Score: <div id="score"></div>
+        <div id="current-score">Current Score:
+            <div id="score"></div>
         </div>
-        <script src="game.js"></script>
+        <script>
+            // TODO: make object-oriented
+
+            const numButtons = 4;
+            var currentScore = 0,
+                highScore = 0;
+            var buttonElements = document.getElementsByClassName("simonsays-button");
+            var buttons = [];
+            var gameIndex = 0;
+            var gameArr = [];
+            for (var index in buttonElements) {
+                if (index < numButtons) {
+                    buttons.push({
+                        "element": buttonElements[index],
+                        "isActive": false,
+                        "id": buttonElements[index].id
+                    });
+                }
+            }
+            console.log(buttons);
+
+            function newRound(gameLength = 2) {
+                gameArr = [];
+                for (var i = 0; i < gameLength; i++) {
+                    var nextButtonIndex = Math.floor(Math.random() * numButtons);
+                    gameArr.push(nextButtonIndex);
+                }
+
+                newPattern(receivePattern);
+            }
+
+            function newPattern(callback) {
+                var gameLength = gameArr.length;
+                gameIndex = 0;
+                var gameInterval = setInterval(() => {
+                    var currentButton = buttons[gameArr[gameIndex]];
+                    try {
+                        currentButton.element.classList.add("active");
+                    } catch (error) {}
+                    currentButton.isActive = true;
+
+                    setTimeout(() => {
+                        try {
+                            currentButton.element.classList.remove("active");
+                        } catch (error) {}
+                        currentButton.isActive = false;
+                    }, 200);
+
+                    currentButton.isActive = !currentButton.isActive;
+
+                    gameIndex++;
+                    if (gameIndex >= gameLength) {
+                        clearInterval(gameInterval);
+                        callback();
+                    }
+                }, 500);
+            }
+
+            function updateGameScore(newScore) {
+                // console.log("updating score to " + newScore);
+                currentScore = newScore;
+                document.getElementById("score").innerText = currentScore;
+            }
+
+            function addGameScore(addScore) {
+                var newScore = currentScore + addScore;
+                updateGameScore(newScore);
+            }
+
+            function clearGameScore() {
+                updateGameScore(0);
+            }
+
+            function clickEventHandler(event) {
+                var gameLength = gameArr.length;
+                console.log("click", event, event.target.id);
+                console.log(buttons[gameArr[gameIndex]]);
+                if (event.target.id === buttons[gameArr[gameIndex]].id) {
+                    console.log("successful click");
+                    gameIndex++;
+                } else {
+                    clearGameScore();
+                    document.getElementById("simonsays-game").removeEventListener("click", clickEventHandler);
+                    return;
+                }
+
+                if (gameIndex >= gameLength) {
+                    document.getElementById("simonsays-game").removeEventListener("click", clickEventHandler);
+                    addGameScore(1);
+                    setTimeout(() => {
+                        newRound(gameLength + 1);
+                    }, 1000);
+                }
+                return gameIndex;
+            }
+
+            function receivePattern(gameArr) {
+                gameIndex = 0;
+                document.getElementById("simonsays-game").addEventListener("click", clickEventHandler);
+            }
+
+            function startGame() {
+                try {
+                    document.getElementById("simonsays-game").removeEventListener("click", clickEventHandler);
+                } catch (error) {}
+                clearGameScore();
+                newRound();
+            }
+
+            document.getElementById("start-game").addEventListener("click", startGame);
+        </script>
     </div>
 </body>
 
