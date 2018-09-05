@@ -1,7 +1,9 @@
+body {
+  background-color: white;
+}
 #simonsays-game {
   height: 70vh;
   width: 70vh;
-  background-color: white;
 }
 
 .simonsays-button {
